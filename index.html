@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Muhammad Arham Rizwan | BSRAI Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #070710;
+      --surface: #0f0f1a;
+      --card: #13131f;
+      --border: #1e1e32;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --accent3: #ff6584;
+      --text: #e8e8f5;
+      --muted: #6b6b8f;
+      --sans: 'Space Grotesk', sans-serif;
+      --mono: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── CANVAS BACKGROUND ── */
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.4; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 5%;
+      background: rgba(7,7,16,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    nav.scrolled { padding: 0.8rem 5%; box-shadow: 0 4px 30px rgba(108,99,255,0.1); }
+    .nav-logo {
+      font-family: var(--mono); font-size: 0.9rem;
+      color: var(--accent2); letter-spacing: 2px;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-logo::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent2); box-shadow: 0 0 10px var(--accent2);
+      animation: pulse 2s infinite;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem; color: var(--muted); text-decoration: none;
+      letter-spacing: 1px; text-transform: uppercase;
+      font-family: var(--mono); transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--accent);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 8rem 5% 4rem; position: relative; overflow: hidden;
+    }
+    .hero-bg-text {
+      position: absolute; font-size: 20vw; font-weight: 800;
+      color: rgba(108,99,255,0.03); top: 50%; left: 50%;
+      transform: translate(-50%,-50%); white-space: nowrap;
+      pointer-events: none; letter-spacing: -5px; z-index: 0;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      font-family: var(--mono); font-size: 0.72rem; color: var(--accent2);
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+      background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2);
+      padding: 0.4rem 1rem; border-radius: 50px;
+    }
+    .hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); animation: pulse 2s infinite; }
+    .hero-name {
+      font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 700;
+      line-height: 1.05; letter-spacing: -2px; margin-bottom: 0.5rem;
+    }
+    .hero-name .first { color: var(--text); }
+    .hero-name .last { color: var(--accent); }
+    .typed-wrapper {
+      font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--muted);
+      margin-bottom: 2rem; min-height: 2rem;
+      font-family: var(--mono); display: flex; align-items: center; gap: 0.5rem;
+    }
+    .typed-text { color: var(--accent2); }
+    .cursor { display: inline-block; width: 2px; height: 1.2em; background: var(--accent2); animation: blink 0.8s infinite; vertical-align: middle; }
+    .hero-desc { font-size: 1rem; color: var(--muted); max-width: 500px; line-height: 1.8; margin-bottom: 2.5rem; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      font-family: var(--mono); font-size: 0.78rem; padding: 0.85rem 1.8rem;
+      border-radius: 6px; text-decoration: none; letter-spacing: 1px;
+      text-transform: uppercase; transition: all 0.25s; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(108,99,255,0.3); }
+    .btn-primary:hover { background: #7c75ff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.4); }
+    .btn-outline { background: transparent; color: var(--accent2); border: 1px solid rgba(0,212,170,0.4); }
+    .btn-outline:hover { background: rgba(0,212,170,0.08); transform: translateY(-2px); }
+    .hero-stats {
+      display: flex; gap: 2rem; margin-top: 3rem;
+      padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.8rem; font-weight: 700; color: var(--accent); line-height: 1; }
+    .stat-label { font-size: 0.7rem; color: var(--muted); font-family: var(--mono); letter-spacing: 1px; margin-top: 0.3rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 5%; position: relative; z-index: 1; }
+    .section-inner { max-width: 1000px; margin: 0 auto; }
+    .section-tag {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 4px;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-tag::before { content: '//'; color: var(--accent2); }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
+      letter-spacing: -1px; margin-bottom: 3rem; line-height: 1.1;
+    }
+    .section-title span { color: var(--accent); }
+
+    /* ── ANIMATE ON SCROLL ── */
+    .reveal { opacity: 0; transform: translateX(-60px); transition: all 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .reveal.from-right { transform: translateX(60px); }
+    .reveal.from-bottom { transform: translateY(60px); }
+    .reveal.visible { opacity: 1; transform: translate(0); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); }
+    .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: start; }
+    .about-text p { color: var(--muted); line-height: 1.9; font-size: 0.95rem; margin-bottom: 1rem; }
+    .about-text p strong { color: var(--text); }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 2rem; }
+    .info-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 1rem 1.2rem; border-radius: 8px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .info-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .info-card .lbl { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .info-card .val { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+
+    /* TERMINAL */
+    .terminal { background: #080812; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; font-family: var(--mono); font-size: 0.78rem; }
+    .terminal-bar { background: #13131f; padding: 0.7rem 1rem; display: flex; align-items: center; gap: 0.4rem; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .terminal-title { margin-left: auto; font-size: 0.65rem; color: var(--muted); }
+    .terminal-body { padding: 1.5rem; line-height: 2; }
+    .t-line { display: flex; gap: 0.5rem; }
+    .t-prompt { color: var(--accent2); white-space: nowrap; }
+    .t-cmd { color: #a8aeff; }
+    .t-out { color: var(--muted); padding-left: 1.2rem; font-size: 0.72rem; }
+    .t-green { color: var(--accent2); }
+    .t-purple { color: var(--accent); }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--bg); }
+    .skills-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+    .skill-group h3 { font-size: 1rem; color: var(--accent2); font-family: var(--mono); letter-spacing: 1px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
+    .skill-item { margin-bottom: 1.2rem; }
+    .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .skill-name { font-size: 0.88rem; color: var(--text); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+    .skill-name .icon { font-size: 1rem; }
+    .skill-pct { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); }
+    .skill-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .skill-bar { height: 100%; border-radius: 2px; width: 0; transition: width 1.2s cubic-bezier(0.25,0.46,0.45,0.94); background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+    .tag {
+      font-family: var(--mono); font-size: 0.7rem; padding: 0.35rem 0.9rem;
+      border-radius: 50px; border: 1px solid var(--border); color: var(--muted);
+      transition: all 0.2s; cursor: default;
+    }
+    .tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.08); }
+
+    /* ── CLOUD ── */
+    #cloud { background: var(--surface); }
+    .cloud-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .cloud-card {
+      background: var(--card); border: 1px solid var(--border); padding: 1.8rem;
+      border-radius: 12px; position: relative; overflow: hidden;
+      transition: all 0.3s; cursor: default;
+    }
+    .cloud-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+    }
+    .cloud-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-5px); box-shadow: 0 10px 40px rgba(108,99,255,0.1); }
+    .cloud-card:hover::before { transform: scaleX(1); }
+    .cloud-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .cloud-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.8rem; }
+    .cloud-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+    .cloud-badge { display: inline-block; font-family: var(--mono); font-size: 0.62rem; padding: 0.25rem 0.7rem; background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.25); color: var(--accent); border-radius: 50px; margin-top: 0.8rem; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 4rem; align-items: start; }
+    .contact-intro h3 { font-size: 1.3rem; margin-bottom: 1rem; }
+    .contact-intro p { color: var(--muted); line-height: 1.8; font-size: 0.9rem; margin-bottom: 2rem; }
+    .contact-items { display: flex; flex-direction: column; gap: 0.8rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.9rem 1.2rem; background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .contact-item:hover { border-color: var(--accent2); transform: translateX(5px); }
+    .contact-item .ci-icon { font-size: 1.1rem; min-width: 24px; text-align: center; }
+    .contact-item .ci-label { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.1rem; }
+    .contact-item .ci-val { font-size: 0.85rem; color: var(--text); font-weight: 500; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+    .form-group input, .form-group textarea {
+      background: var(--card); border: 1px solid var(--border); color: var(--text);
+      padding: 0.85rem 1rem; border-radius: 8px; font-family: var(--sans);
+      font-size: 0.88rem; outline: none; transition: border-color 0.2s; resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { min-height: 110px; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+    }
+    footer span { color: var(--accent2); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+
+    .hero-content > * { animation: fadeUp 0.7s ease both; }
+    .hero-content > *:nth-child(1){animation-delay:0.1s}
+    .hero-content > *:nth-child(2){animation-delay:0.2s}
+    .hero-content > *:nth-child(3){animation-delay:0.3s}
+    .hero-content > *:nth-child(4){animation-delay:0.4s}
+    .hero-content > *:nth-child(5){animation-delay:0.5s}
+    .hero-content > *:nth-child(6){animation-delay:0.6s}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      nav{padding:1rem 5%;}
+      .nav-links{display:none;}
+      section{padding:4rem 5%;}
+      #hero{padding:6rem 5% 3rem;}
+      .about-grid,.contact-grid{grid-template-columns:1fr;gap:2rem;}
+      .skills-container,.cloud-grid{grid-template-columns:1fr;}
+      .info-grid{grid-template-columns:1fr;}
+      .form-row{grid-template-columns:1fr;}
+      .hero-stats{gap:1rem;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Particle Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">MAR.DEV</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#cloud">Cloud</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-text">BSRAI</div>
+  <div class="hero-content">
+    <div class="hero-tag"><span class="dot"></span>Available for collaboration</div>
+    <div class="hero-name">
+      <div class="first">Muhammad Arham</div>
+      <div class="last">Rizwan</div>
+    </div>
+    <div class="typed-wrapper">
+      &gt;&nbsp;<span class="typed-text" id="typed"></span><span class="cursor"></span>
+    </div>
+    <p class="hero-desc">
+      4th semester BSRAI student at University of Lahore. I build things with code, design with purpose,
+      and automate with robots. Currently exploring AI systems, embedded hardware, and cloud infrastructure.
+    </p>
+    <div class="hero-btns">
+      <a href="#about" class="btn btn-primary">Explore Profile</a>
+      <a href="#contact" class="btn btn-outline">Get In Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">4th</div><div class="stat-label">Semester</div></div>
+      <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Technologies</div></div>
+      <div class="stat"><div class="stat-num">AWS</div><div class="stat-label">Cloud Deployed</div></div>
+      <div class="stat"><div class="stat-num">UOL</div><div class="stat-label">University</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <p class="section-tag reveal">01 — Identity</p>
+    <h2 class="section-title reveal">About <span>Me</span></h2>
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="about-text">
+          <p>
+            I'm <strong>Muhammad Arham Rizwan</strong>, a 4th semester student pursuing
+            <strong>Bachelor of Science in Robotics and Artificial Intelligence (BSRAI)</strong>
+            at the <strong>University of Lahore</strong>. My passion lies at the intersection of
+            intelligent systems, embedded hardware, and software development.
+          </p>
+          <p>
+            From programming microcontrollers with <strong>Arduino</strong> to writing algorithms in
+            <strong>Python and C++</strong>, I enjoy turning ideas into working systems. I also have
+            a creative side through <strong>graphic design</strong>, which helps me build projects
+            that are both functional and visually refined.
+          </p>
+          <p>
+            This portfolio website is deployed on a real <strong>AWS EC2 Ubuntu server</strong> as part
+            of my Linux Fundamentals semester project — configured from scratch using SSH, Apache,
+            UFW firewall, and Linux system administration commands.
+          </p>
+        </div>
+        <div class="info-grid" style="margin-top:2rem;">
+          <div class="info-card reveal">
+            <div class="lbl">Full Name</div>
+            <div class="val">Muhammad Arham Rizwan</div>
+          </div>
+          <div class="info-card reveal from-right">
+            <div class="lbl">Student ID</div>
+            <div class="val">70177801</div>
+          </div>
+          <div class="info-card reveal">
+            <div class="lbl">University</div>
+            <div class="val">University of Lahore</div>
+          </div>
+          <div class="info-card reveal from-right">
+            <div class="lbl">Programme</div>
+            <div class="val">BSRAI — Semester 4</div>
+          </div>
+          <div class="info-card reveal">
+            <div class="lbl">Location</div>
+            <div class="val">Lahore, Pakistan</div>
+          </div>
+          <div class="info-card reveal from-right">
+            <div class="lbl">Email</div>
+            <div class="val" style="font-size:0.78rem;">70177801@student.uol.edu.pk</div>
+          </div>
+        </div>
+      </div>
+      <div class="terminal reveal from-right">
+        <div class="terminal-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="terminal-title">arham@uol-bsrai ~ </span>
+        </div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-prompt">arham@aws:~$</span><span class="t-cmd"> whoami</span></div>
+          <div class="t-out t-green">Muhammad Arham Rizwan</div>
+          <div class="t-line"><span class="t-prompt">arham@aws:~$</span><span class="t-cmd"> cat info.json</span></div>
+          <div class="t-out">{</div>
+          <div class="t-out">&nbsp;"university": <span class="t-green">"UOL Lahore"</span>,</div>
+          <div class="t-out">&nbsp;"programme": <span class="t-green">"BSRAI"</span>,</div>
+          <div class="t-out">&nbsp;"semester": <span class="t-purple">4</span>,</div>
+          <div class="t-out">&nbsp;"city": <span class="t-green">"Lahore, PK"</span>,</div>
+          <div class="t-out">&nbsp;"focus": <span class="t-green">"AI + Robotics"</span></div>
+          <div class="t-out">}</div>
+          <div class="t-line"><span class="t-prompt">arham@aws:~$</span><span class="t-cmd"> systemctl status apache2</span></div>
+          <div class="t-out">● apache2 — <span class="t-green">active (running)</span></div>
+          <div class="t-out">   Hosted: <span class="t-purple">16.170.250.49</span></div>
+          <div class="t-line"><span class="t-prompt">arham@aws:~$</span><span class="t-cmd"> _</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <p class="section-tag reveal">02 — Expertise</p>
+    <h2 class="section-title reveal">Technical <span>Skills</span></h2>
+    <div class="skills-container">
+      <div class="reveal">
+        <div class="skill-group">
+          <h3>// Programming</h3>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🐍</span> Python</div>
+              <span class="skill-pct">80%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="80"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">⚙️</span> C++</div>
+              <span class="skill-pct">72%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="72"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🌐</span> HTML & CSS</div>
+              <span class="skill-pct">85%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🐧</span> Linux / Bash</div>
+              <span class="skill-pct">75%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="75"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal from-right">
+        <div class="skill-group">
+          <h3>// Hardware & Design</h3>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🤖</span> Arduino</div>
+              <span class="skill-pct">78%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="78"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🎨</span> Graphic Designing</div>
+              <span class="skill-pct">82%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="82"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">☁️</span> AWS Cloud</div>
+              <span class="skill-pct">65%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="65"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <div class="skill-name"><span class="icon">🧠</span> AI / ML Basics</div>
+              <span class="skill-pct">60%</span>
+            </div>
+            <div class="skill-track"><div class="skill-bar" data-width="60"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal from-bottom" style="margin-top:2.5rem;">
+      <p style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:2px;margin-bottom:1rem;">// TOOLS & TECHNOLOGIES</p>
+      <div class="tech-tags">
+        <span class="tag">Python</span><span class="tag">C++</span><span class="tag">Arduino IDE</span>
+        <span class="tag">Linux</span><span class="tag">AWS EC2</span><span class="tag">Apache2</span>
+        <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">UFW</span>
+        <span class="tag">SSH</span><span class="tag">Adobe Illustrator</span><span class="tag">Photoshop</span>
+        <span class="tag">Git</span><span class="tag">VS Code</span><span class="tag">Bash</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOUD -->
+<section id="cloud">
+  <div class="section-inner">
+    <p class="section-tag reveal">03 — Infrastructure</p>
+    <h2 class="section-title reveal">Cloud <span>Computing</span></h2>
+    <div class="cloud-grid">
+      <div class="cloud-card reveal">
+        <div class="cloud-icon">☁️</div>
+        <h3>AWS EC2 Instance</h3>
+        <p>Launched Ubuntu 26.04 LTS on a t3.micro instance in eu-north-1 (Stockholm). Configured via AWS Management Console with Free Tier settings.</p>
+        <span class="cloud-badge">t3.micro · eu-north-1</span>
+      </div>
+      <div class="cloud-card reveal from-bottom">
+        <div class="cloud-icon">🔐</div>
+        <h3>SSH Key Authentication</h3>
+        <p>Generated RSA key pair (.pem file) for secure passwordless authentication. Connected from VirtualBox Ubuntu terminal using chmod 400 secured key.</p>
+        <span class="cloud-badge">RSA · Port 22</span>
+      </div>
+      <div class="cloud-card reveal from-right">
+        <div class="cloud-icon">🌐</div>
+        <h3>Apache Web Server</h3>
+        <p>Installed and configured Apache2 on Ubuntu. Enabled auto-start on boot with systemctl. Website publicly accessible via public IP address.</p>
+        <span class="cloud-badge">Apache 2.4 · Port 80</span>
+      </div>
+      <div class="cloud-card reveal">
+        <div class="cloud-icon">🛡️</div>
+        <h3>UFW Firewall</h3>
+        <p>Configured Uncomplicated Firewall with default deny incoming policy. Explicitly allowed only SSH (22) and HTTP (80) traffic for security.</p>
+        <span class="cloud-badge">UFW · Hardened</span>
+      </div>
+      <div class="cloud-card reveal from-bottom">
+        <div class="cloud-icon">👥</div>
+        <h3>User & Group Management</h3>
+        <p>Created webadmin user and webteam group. Assigned /var/www/html/portfolio directory with correct ownership and chmod 755 permissions.</p>
+        <span class="cloud-badge">webadmin · webteam</span>
+      </div>
+      <div class="cloud-card reveal from-right">
+        <div class="cloud-icon">📦</div>
+        <h3>IaaS Cloud Model</h3>
+        <p>This project leverages Infrastructure as a Service — renting virtual compute on AWS instead of physical hardware, enabling global accessibility.</p>
+        <span class="cloud-badge">IaaS · AWS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <p class="section-tag reveal">04 — Connect</p>
+    <h2 class="section-title reveal">Get In <span>Touch</span></h2>
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="contact-intro">
+          <h3>Let's Connect</h3>
+          <p>Whether it's a project collaboration, academic discussion, or just saying hello — my inbox is open. I'm always looking to connect with fellow developers, designers, and engineers.</p>
+        </div>
+        <div class="contact-items">
+          <div class="contact-item reveal">
+            <span class="ci-icon">✉️</span>
+            <div><div class="ci-label">Email</div><div class="ci-val">70177801@student.uol.edu.pk</div></div>
+          </div>
+          <div class="contact-item reveal">
+            <span class="ci-icon">🎓</span>
+            <div><div class="ci-label">University</div><div class="ci-val">University of Lahore</div></div>
+          </div>
+          <div class="contact-item reveal">
+            <span class="ci-icon">📚</span>
+            <div><div class="ci-label">Programme</div><div class="ci-val">BSRAI — 4th Semester</div></div>
+          </div>
+          <div class="contact-item reveal">
+            <span class="ci-icon">📍</span>
+            <div><div class="ci-label">Location</div><div class="ci-val">Lahore, Punjab, Pakistan</div></div>
+          </div>
+          <div class="contact-item reveal">
+            <span class="ci-icon">🖥️</span>
+            <div><div class="ci-label">Server</div><div class="ci-val">AWS EC2 · 16.170.250.49</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal from-right">
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" placeholder="John Doe"/>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="you@email.com"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" placeholder="Project Collaboration"/>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="Your message..."></textarea>
+          </div>
+          <button class="btn btn-primary" style="align-self:flex-start" onclick="alert('Message received! (Demo)')">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  Designed & Deployed by <span>Muhammad Arham Rizwan</span> &nbsp;·&nbsp;
+  BSRAI Semester 4 &nbsp;·&nbsp; University of Lahore &nbsp;·&nbsp;
+  Hosted on <span>AWS EC2 Ubuntu</span>
+</footer>
+
+<script>
+  // ── PARTICLE CANVAS ──────────────────────────────────────────────────────
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.size = Math.random() * 1.5 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.color = Math.random() > 0.5 ? '108,99,255' : '0,212,170';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor((W * H) / 12000);
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+  }
+
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(108,99,255,${0.08 * (1 - dist/100)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateCanvas() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(animateCanvas);
+  }
+
+  resize();
+  initParticles();
+  animateCanvas();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+
+  // ── TYPED EFFECT ─────────────────────────────────────────────────────────
+  const phrases = [
+    'Robotics & AI Student',
+    'Python Developer',
+    'Arduino Enthusiast',
+    'Linux Sysadmin',
+    'Graphic Designer',
+    'Cloud Builder'
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  const typedEl = document.getElementById('typed');
+
+  function type() {
+    const current = phrases[pi];
+    if (!deleting) {
+      typedEl.textContent = current.slice(0, ++ci);
+      if (ci === current.length) { deleting = true; setTimeout(type, 1800); return; }
+    } else {
+      typedEl.textContent = current.slice(0, --ci);
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+    }
+    setTimeout(type, deleting ? 50 : 80);
+  }
+  setTimeout(type, 1000);
+
+  // ── SCROLL REVEAL ────────────────────────────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+          // Animate skill bars when skills section visible
+          entry.target.querySelectorAll('.skill-bar').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        }, 100);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Animate skill bars in already-visible areas
+  document.querySelectorAll('.reveal.visible .skill-bar').forEach(bar => {
+    bar.style.width = bar.dataset.width + '%';
+  });
+
+  // ── NAV SCROLL ───────────────────────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+</script>
+</body>
+</html>
